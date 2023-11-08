@@ -76,6 +76,7 @@ add_coverage_warning = ['Osoite tulee olla Suomessa','Coverage only in Finland']
 profile_autogen_toggle = ['Koosta palveluprofiili automaattisesti','Autogenerate profile']
 profile_gen_status = ['Koostaa profiilia...','Generating profile...']
 profile_coverage_warning = ['Palveluprofiili saatavissa vain kävelyetäisyydeltä','Profile available only in walkable scale']
+geoapify_attribution = ['Saavutettavuusdata Geoapify','Reach data Geoapify']
 
 not_available_warning = ['Tilaa lisää analytiikka osoitteesta office@qissa.fi','For more analytics contact office@qissa.fi']
 
@@ -193,6 +194,7 @@ if auth_check:
                     if h3_isolines is not None:
                         reach_fig = client_utils.reach_map_plot(h3_isolines,latlng=latlng,zoom=zoom)
                         st.plotly_chart(reach_fig, use_container_width=True, config = {'displayModeBar': False})
+                        st.caption(geoapify_attribution[lin])
                 else:
                     st.warning(add_coverage_warning[lin])
 
