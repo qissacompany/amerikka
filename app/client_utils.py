@@ -222,7 +222,7 @@ def osm_pois_for_h3(_h3_df, categories_json, lin=0):
         
         # Fetch POIs using osmnx
         try:
-            pois_gdf = ox.geometries_from_polygon(row['geometry'], tags={'amenity': True, 'shop': True, 'leisure': True}).reset_index()
+            pois_gdf = ox.features_from_polygon(row['geometry'], tags={'amenity': True, 'shop': True, 'leisure': True}).reset_index()
         except Exception as e:
             print(f"Error fetching POIs: {e}")
             pois_gdf = None

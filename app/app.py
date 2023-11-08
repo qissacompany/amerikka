@@ -1,6 +1,5 @@
 #app.py very beta
 import streamlit as st
-import boto3
 import geocoder
 
 import open_utils, client_utils
@@ -10,7 +9,7 @@ client_name = "Suunnittelutoimisto Amerikka"
 client_app_name = ":violet[AQ-Studio]"
 client_bucket_url = st.secrets['client_bucket']['BUCKET_url']
 bucket_name = st.secrets["client_bucket"]['BUCKET_name']
-client_logo_url = "https://" + client_bucket_url + "/" + bucket_name + '/media/logo_holder.png'
+client_logo_url = "https://www.amerikka.fi/wp-content/themes/amerikka-theme/assets/images/amerikka_a.svg"
 default_lang = "FIN"
 
 # random image from client collection
