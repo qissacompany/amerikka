@@ -162,4 +162,5 @@ cython_debug/
 #custom rules
 secrets.toml
 cache
+__pycache__
 .DS_Store
