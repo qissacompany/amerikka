@@ -1,1 +1,1 @@
-# open-app-template
+# open-app-amerikka

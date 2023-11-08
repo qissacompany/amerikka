@@ -6,8 +6,8 @@ import geocoder
 import open_utils, client_utils
 
 # --------- CLIENT CONFIGS ---------------
-client_name = "Lorem Ipsum Ltd."
-client_app_name = ":violet[Urban Data Lab]"
+client_name = "Suunnittelutoimisto Amerikka"
+client_app_name = ":violet[AQ-Studio]"
 client_bucket_url = st.secrets['client_bucket']['BUCKET_url']
 bucket_name = st.secrets["client_bucket"]['BUCKET_name']
 client_logo_url = "https://" + client_bucket_url + "/" + bucket_name + '/media/logo_holder.png'
