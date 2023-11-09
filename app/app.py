@@ -5,8 +5,9 @@ import geocoder
 import open_utils, client_utils
 
 # --------- CLIENT CONFIGS ---------------
-client_name = "Suunnittelutoimisto Amerikka"
 client_app_name = ":violet[AQ-Studio]"
+client_name = "Suunnittelutoimisto Amerikka"
+#keys
 client_bucket_url = st.secrets['client_bucket']['BUCKET_url']
 bucket_name = st.secrets["client_bucket"]['BUCKET_name']
 client_logo_url = "https://www.amerikka.fi/wp-content/themes/amerikka-theme/assets/images/amerikka_a.svg"
@@ -82,8 +83,8 @@ not_available_warning = ['Tilaa lisää analytiikka osoitteesta office@qissa.fi'
 
 # ------- HEADER -----------
 st.image(client_logo_url,width=150)
-st.header(client_name,divider="orange")
-st.subheader(client_app_name)
+st.header(client_app_name,divider="orange")
+st.subheader(client_name)
 
 #lang toggle if needed
 if default_lang == "FIN":
