@@ -151,13 +151,12 @@ if auth_check:
         tab_holder3 = st.empty()
 
     if add:
-        with tab_holder1:
-            with st.status(map_gen_status[lin], expanded=True):
-                loc = geocoder.osm(add)
-                if loc.country == "Suomi / Finland":
-                    latlng = loc.latlng
-                    times = [10,15,20,25]
-
+        loc = geocoder.osm(add)
+        if loc.country == "Suomi / Finland":
+            latlng = loc.latlng
+            times = [10,15,20,25]
+            with tab_holder1:
+                with st.status(map_gen_status[lin], expanded=True):
                     # cached isolines
                     if moodi == moodit[lin][0]: #walk
                         reso = 10
@@ -196,35 +195,35 @@ if auth_check:
                         reach_fig = client_utils.reach_map_plot(h3_isolines,latlng=latlng,zoom=zoom)
                         st.plotly_chart(reach_fig, use_container_width=True, config = {'displayModeBar': False})
                         st.caption(geoapify_attribution[lin])
+
+            with tab_holder2:
+                if moodi == moodit[lin][0]:
+                    gdf = h3_isolines.copy()
+                    categories = client_utils.get_classificator_json()
+                    autorun_tab2 = st.toggle(profile_autogen_toggle[lin])
+                    
+                    if autorun_tab2:
+                        with st.status(profile_gen_status[lin], expanded=True):
+                            gdf['time'] = gdf['time'].astype(float).astype(int)
+                            ##aggregate to h9..
+                            h3_isolines_09 = gdf[['time']].h3.h3_to_parent_aggregate(9, operation='mean', return_geometry=False)
+                            h3_isoline_query = h3_isolines_09.reset_index() 
+                            h3_isoline_query.rename(columns={'h3_09':'h3_id'}, inplace=True)
+                            h3_isoline_query.set_index('h3_id', inplace=True)
+                            
+                            def round_to_five(n):
+                                return round(n / 5) * 5
+                            h3_isoline_query['time'] = h3_isoline_query['time'].apply(round_to_five)
+
+                            grouped_sums, pois_gdf = client_utils.osm_pois_for_h3(_h3_df=h3_isoline_query,categories_json=categories,lin=lin)
+                            
+                            #plot
+                            profile_scat = client_utils.plot_amenity_profile(grouped_sums,lin=lin)
+                            st.plotly_chart(profile_scat, use_container_width=True, config = {'displayModeBar': False})
                 else:
-                    st.warning(add_coverage_warning[lin])
-
-        with tab_holder2:
-            if moodi == moodit[lin][0]:
-                gdf = h3_isolines.copy()
-                categories = client_utils.get_classificator_json()
-                autorun_tab2 = st.toggle(profile_autogen_toggle[lin])
-                
-                if autorun_tab2:
-                    with st.status(profile_gen_status[lin], expanded=True):
-                        gdf['time'] = gdf['time'].astype(float).astype(int)
-                        ##aggregate to h9..
-                        h3_isolines_09 = gdf[['time']].h3.h3_to_parent_aggregate(9, operation='mean', return_geometry=False)
-                        h3_isoline_query = h3_isolines_09.reset_index() 
-                        h3_isoline_query.rename(columns={'h3_09':'h3_id'}, inplace=True)
-                        h3_isoline_query.set_index('h3_id', inplace=True)
-                        
-                        def round_to_five(n):
-                            return round(n / 5) * 5
-                        h3_isoline_query['time'] = h3_isoline_query['time'].apply(round_to_five)
-
-                        grouped_sums, pois_gdf = client_utils.osm_pois_for_h3(_h3_df=h3_isoline_query,categories_json=categories,lin=lin)
-                        
-                        #plot
-                        profile_scat = client_utils.plot_amenity_profile(grouped_sums,lin=lin)
-                        st.plotly_chart(profile_scat, use_container_width=True, config = {'displayModeBar': False})
-            else:
-                st.warning(profile_coverage_warning[lin])
+                    st.warning(profile_coverage_warning[lin])
+        else:
+            st.warning(add_coverage_warning[lin])
 
         with tab_holder3:
             st.success(not_available_warning[lin])
