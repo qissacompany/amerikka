@@ -62,6 +62,8 @@ add_bg_image(client_bg_image_url)
 qissa_footer_badge_text = ["Kaupunkiarkkitehtuurin_analytiikkaa",
                       "Urban_architecture_analytics"]
 signin_text = ['Kirjaudu sisään!','Sign in!']
+signed_in_text = ['Tervetuloa!','Welcome!']
+
 datasource_expander = ['Datalähteet','Datasource']
 address_input_title = ['Kohdeosoite','Case address']
 mode_title = ['Tarkastelun mittakaava','Travel scale of analysis']
@@ -88,13 +90,13 @@ st.subheader(client_name)
 
 #lang toggle if needed
 if default_lang == "FIN":
-    lang = st.toggle('In English')
+    lang = st.toggle('ENG')
     if lang:
         lin = 1
     else:
         lin = 0
 else:
-    lang = st.toggle('Suomeksi')
+    lang = st.toggle('FIN')
     if lang:
         lin = 0
     else:
@@ -102,14 +104,18 @@ else:
 
 st.markdown('###')
 st.markdown("###")
-st.subheader(signin_text[lin])
+singin_holder = st.empty()
+auth_check = open_utils.check_password(lin=lin)
 
-
-
+if not auth_check:
+    with singin_holder:
+        st.subheader(signin_text[lin])
+else:
+    with singin_holder:
+        st.subheader(signed_in_text[lin])
 
 # ------- CLIENT CONTENT -----------
 
-auth_check = open_utils.check_password(lin=lin)
 if auth_check:
 
     with st.expander(datasource_expander[lin], expanded=True):
