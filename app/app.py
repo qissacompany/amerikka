@@ -1,8 +1,8 @@
 #app.py very beta
 import streamlit as st
 import geocoder
-
 import open_utils, client_utils
+
 
 # --------- CLIENT CONFIGS ---------------
 client_app_name = ":violet[AQ-Studio]"
@@ -127,14 +127,15 @@ if auth_check:
             input_value = st.session_state.add
 
         # UI for reach based analytics
-        c1,c2,c3 = st.columns(3)
+        c1,c2,c3 = st.columns([1,2,1])
         add = c1.text_input(address_input_title[lin],key="add",value=input_value)
-        moodit = [['Kävely','Pyöräily','Joukkoliikenne'],
-                    ['Walking','Biking','Public transit']
+        moodit = [['Kävely','Pyöräily','Joukkoliikenne','Auto'],
+                    ['Walking','Biking','Public transit','Drive']
                     ]
         modes = {moodit[lin][0]:'walk',
                     moodit[lin][1]:'bicycle',
-                    moodit[lin][2]: 'approximated_transit'
+                    moodit[lin][2]: 'approximated_transit',
+                    moodit[lin][3]: 'drive'
                     }
         moodi =  c2.radio(mode_title[lin],moodit[lin],horizontal=True)
         source = c3.radio(datasource_title[lin],['OSM', 'Overturemaps'], horizontal=True)
@@ -157,8 +158,9 @@ if auth_check:
         tab_holder3 = st.empty()
 
     if add:
-        loc = geocoder.osm(add)
-        if loc.country == "Suomi / Finland":
+        loc = geocoder.mapbox(add,key=st.secrets['mapbox']['MAPBOX_client_token'])
+        
+        if loc.country == "Finland" and loc.quality == 1:
             latlng = loc.latlng
             times = [10,15,20,25]
             with tab_holder1:
@@ -187,6 +189,16 @@ if auth_check:
                     elif moodi == moodit[lin][2]: #public trans
                         reso = 9
                         zoom = 11
+                        @st.cache_data(show_spinner=False)
+                        def isolines_pub(times,mode,reso,latlng):
+                            h3_isolines = client_utils.reach_h3(latlng=latlng,mode=mode,
+                                                        reso=reso,times=times,reid_list=None)
+                            return h3_isolines
+                        h3_isolines = isolines_pub(times,modes[moodi],reso,latlng)
+
+                    elif moodi == moodit[lin][3]: #drive
+                        reso = 9
+                        zoom = 10
                         @st.cache_data(show_spinner=False)
                         def isolines_pub(times,mode,reso,latlng):
                             h3_isolines = client_utils.reach_h3(latlng=latlng,mode=mode,
